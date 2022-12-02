@@ -43,7 +43,7 @@ public class Day2 {
     }
 
     private static Integer part1(List<String> inputList) {
-        int points = 0;
+        Integer points = 0;
         for (String line : inputList) {
             String[] element = line.split(" ");
             String left = element[0];
