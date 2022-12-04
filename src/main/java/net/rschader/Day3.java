@@ -12,9 +12,9 @@ import net.rschader.utils.ResourceLoader;
 
 public class Day3 {
 
-    private static String alphabet = "abcdefghijklmnopqrstuvwxyz";
+    private static final String alphabet = "abcdefghijklmnopqrstuvwxyz";
 
-    private static Map<Character, Integer> priorities = createPrioritiesMap();
+    private static final Map<Character, Integer> priorities = createPrioritiesMap();
 
     private static Map<Character, Integer> createPrioritiesMap() {
         Map<Character, Integer> prio = new HashMap<>();
@@ -34,17 +34,16 @@ public class Day3 {
 
         for (int i = 0; i < b.length(); i++) {
             Character c = b.charAt(i);
-            if (set.contains(c) && sb.toString().indexOf(c) == -1)
-                sb.append(c);
+            if (set.contains(c) && sb.toString().indexOf(c) == -1) sb.append(c);
         }
 
         return sb.toString();
     }
 
-    private static Integer calculatePriorities(String s) {
+    private static int calculatePriorities(String s) {
         int points = 0;
         for (int i = 0; i < s.length(); i++) {
-            Character c = s.charAt(i);
+            char c = s.charAt(i);
             if (Character.isLowerCase(c))
                 points += priorities.get(c);
             else
@@ -54,7 +53,7 @@ public class Day3 {
 
     }
 
-    private static Integer calculatePrioritiesPerGroup(List<String> group) {
+    private static int calculatePrioritiesPerGroup(List<String> group) {
         Set<Character> set = new HashSet<>();
         String first = group.get(0);
 
@@ -79,7 +78,7 @@ public class Day3 {
         return calculatePriorities(sb.toString());
     }
 
-    private static Integer part1(List<String> input) {
+    private static int part1(List<String> input) {
         int points = 0;
         for (String line : input) {
             int n = line.length();
@@ -91,7 +90,7 @@ public class Day3 {
         return points;
     }
 
-    private static Integer part2(List<String> input) {
+    private static int part2(List<String> input) {
         int points = 0;
 
         List<List<String>> groups = new ArrayList<>();
@@ -108,7 +107,6 @@ public class Day3 {
 
     public static void main(String[] args) {
         ResourceLoader resourceLoader = new ResourceLoader();
-
         List<String> input = resourceLoader.load("day3.txt");
         assert (part1(input) == 7863);
         assert (part2(input) == 2488);

@@ -8,15 +8,20 @@ import net.rschader.utils.ResourceLoader;
 
 public class Day2 {
 
-    private static Map<String, String> rules = Map.of(
+    private static final Map<String, String> rules = Map.of(
             "A", "C",
             "B", "A",
             "C", "B");
 
-    private static Map<String, String> shapes = Map.of(
+    private static final Map<String, String> shapeMapping = Map.of(
             "X", "A",
             "Y", "B",
             "Z", "C");
+
+    private static final Map<String, Integer> shapePoints = Map.of(
+            "A", 1,
+            "B", 2,
+            "C", 3);
 
     private static Integer getShapePoints(String shape) {
         if (shape.equals("A"))
@@ -28,7 +33,7 @@ public class Day2 {
     }
 
     private static Integer getPointsPerRound(String left, String right) {
-        Integer result = 0 + getShapePoints(right);
+        int result = shapePoints.get(right);
 
         if (right.equals(left))
             result += 3;
@@ -42,20 +47,20 @@ public class Day2 {
         return result;
     }
 
-    private static Integer part1(List<String> inputList) {
-        Integer points = 0;
+    private static int part1(List<String> inputList) {
+        int points = 0;
         for (String line : inputList) {
             String[] element = line.split(" ");
             String left = element[0];
-            String right = shapes.get(element[1]);
+            String right = shapeMapping.get(element[1]);
             Integer p = getPointsPerRound(left, right);
             points += p;
         }
         return points;
     }
 
-    private static Integer part2(List<String> inputList) {
-        Integer points = 0;
+    private static int part2(List<String> inputList) {
+        int points = 0;
         for (String line : inputList) {
             String[] element = line.split(" ");
             String left = element[0];
@@ -63,16 +68,12 @@ public class Day2 {
 
             if (right.equals("X")) {
                 String loosingShape = rules.get(left);
-                Integer shapePoints = getShapePoints(loosingShape);
-                points += shapePoints + 0;
-            }
-
-            else if (right.equals("Y")) {
+                Integer shapePoints = Day2.shapePoints.get(loosingShape);
+                points += shapePoints;
+            } else if (right.equals("Y")) {
                 Integer shapePoints = getShapePoints(left);
                 points += shapePoints + 3;
-            }
-
-            else {
+            } else {
                 for (Entry<String, String> entry : rules.entrySet()) {
                     if (entry.getValue().equals(left)) {
                         Integer shapePoints = getShapePoints(entry.getKey());
@@ -87,12 +88,11 @@ public class Day2 {
 
     public static void main(String[] args) {
         ResourceLoader resourceLoader = new ResourceLoader();
-
         List<String> input = resourceLoader.load("day2.txt");
-        Integer part1 = part1(input);
+        int part1 = part1(input);
         assert (part1 == 15422);
 
-        Integer part2 = part2(input);
+        int part2 = part2(input);
         assert (part2 == 15442);
     }
 
