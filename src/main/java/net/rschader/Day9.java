@@ -27,10 +27,7 @@ public class Day9 {
     }
 
     private static Point followUp(Point head, Point tail) {
-        if (isAdjacent(head, tail))
-            return tail;
-
-        Point update = tail.getLocation();
+        Point update = head.getLocation();
         if (tail.x > head.x)
             update.x = tail.x - 1;
         else if (tail.x < head.x)
@@ -44,64 +41,42 @@ public class Day9 {
         return update;
     }
 
-    private static int part1(List<String> input) {
-        Point head = new Point(0, 0);
-        Point tail = new Point(0, 0);
-
+    private static int trackTailPositions(List<String> input, int ropeLength) {
         Set<Point> positions = new HashSet<>();
-        positions.add(tail);
-
-        for (String line : input) {
-            String direction = line.split(" ")[0];
-            int steps = Integer.valueOf(line.split(" ")[1]);
-            for (int i = 0; i < steps; i++) {
-                head = changeDirection(direction, head);
-                tail = followUp(head, tail);
-                positions.add(tail);
-            }
+        List<Point> rope = new ArrayList<>();
+        for (int i = 0; i < ropeLength; i++) {
+            rope.add(new Point(0, 0));
         }
-
-        return positions.size();
-    }
-
-    private static int part2(List<String> input) {
-        Point start = new Point(0, 0);
-        Point head = new Point(0, 0);
-
-        List<Point> snake = new ArrayList<>();
-        snake.add(start);
-
-        Set<Point> tailPositions = new LinkedHashSet<>();
-        tailPositions.add(start);
-
         for (String line : input) {
             String direction = line.split(" ")[0];
             int steps = Integer.valueOf(line.split(" ")[1]);
             while (steps-- > 0) {
-                head = changeDirection(direction, head);
-                Point prev = head;
-                List<Point> snakeUpdate = new ArrayList<>();
-                for (Point current : snake) {
-                    Point followUpPoint = followUp(prev, current);
-                    snakeUpdate.add(followUpPoint);
-                    Point currentTail = snakeUpdate.get(snakeUpdate.size() - 1);
-                    if (snakeUpdate.size() < 9 && !currentTail.equals(start) && current.equals(start)) snakeUpdate.add(current);
-                    prev = followUpPoint;
+                rope.set(0, changeDirection(direction, rope.get(0)));
+                for (int i = 1; i < rope.size(); i++) {
+                    Point head = rope.get(i - 1);
+                    Point tail = rope.get(i);
+                    if (!isAdjacent(head, tail))
+                        rope.set(i, followUp(head, tail));
                 }
-                snake = snakeUpdate;
-                Point tail = snakeUpdate.get(snakeUpdate.size() - 1);
-                tailPositions.add(tail);
+                positions.add(rope.get(rope.size() - 1));
             }
         }
+        return positions.size();
+    }
 
-        return tailPositions.size();
+    private static int part1(List<String> input, int n) {
+        return trackTailPositions(input, n);
+    }
+
+    private static int part2(List<String> input, int n) {
+        return trackTailPositions(input, n);
     }
 
     public static void main(String[] args) {
         ResourceLoader resourceLoader = new ResourceLoader();
         List<String> input = resourceLoader.load("day9.txt");
-        // System.out.println(part1(first)); // 6284
-        System.out.println(part2(input)); // 1415, 1485, 1847, 1635, 530
+        System.out.println(part1(input, 2)); // 6284
+        System.out.println(part2(input, 10)); // 2661
 
     }
 
